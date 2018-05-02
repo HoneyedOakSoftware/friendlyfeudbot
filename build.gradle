@@ -1,0 +1,30 @@
+buildscript {
+    ext {
+        discord4JVersion = '2.10.1'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+group = 'com.honeyedoaksoftware'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    compile("com.discord4j:Discord4J:${discord4JVersion}")
+}
