@@ -46,7 +46,11 @@ public class CommandHandler {
                 String command = botArgs[0].toLowerCase();
                 List<String> commandArgs = Arrays.asList(Arrays.copyOfRange(botArgs, 1, botArgs.length));
 
-                commandMap.get(command).runCommand(event, commandArgs);
+                if (commandMap.containsKey(command)) {
+                    commandMap.get(command).runCommand(event, commandArgs);
+                } else {
+                    commandMap.get(HELP_COMMAND).runCommand(event, commandArgs);
+                }
             }
         }
     }
