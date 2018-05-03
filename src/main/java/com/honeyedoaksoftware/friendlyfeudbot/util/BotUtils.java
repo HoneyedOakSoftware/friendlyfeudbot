@@ -45,4 +45,15 @@ public class BotUtils {
     public static String[] getMessageParts(IMessage message) {
         return message.getContent().split(" ");
     }
+
+    public static Long getIdFromText(String s) {
+        Long id = null;
+
+        String temp = s.trim();
+        if (temp.matches("<@\\d*>")) {
+            id = Long.parseLong(temp.substring(2, temp.length() - 1));
+        }
+
+        return id;
+    }
 }
