@@ -1,5 +1,6 @@
 package com.honeyedoaksoftware.friendlyfeudbot;
 
+import com.honeyedoaksoftware.friendlyfeudbot.util.BotUtils;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
