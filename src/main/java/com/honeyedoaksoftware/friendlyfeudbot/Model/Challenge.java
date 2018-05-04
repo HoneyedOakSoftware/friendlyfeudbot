@@ -1,6 +1,7 @@
 package com.honeyedoaksoftware.friendlyfeudbot.Model;
 
 import lombok.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,48 +16,51 @@ import java.io.Serializable;
 @ToString
 public class Challenge implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    @Column(nullable = false)
-    private long guildId;
+	@Column(nullable = false)
+	private long guildId;
 
-    @Column(nullable = false)
-    private long challengerUserId;
+	@Column(nullable = false)
+	private long challengerUserId;
 
-    @Column(nullable = false)
-    private long defenderUserId;
+	@Column(nullable = false)
+	private long defenderUserId;
 
-    private Long refereeUserId;
+	private Long refereeUserId;
 
-    private String challenge;
+	private String challenge;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+	@Column(nullable = false)
+	@Setter(AccessLevel.NONE)
+	private String challengeCode;
 
-        if (o == null || getClass() != o.getClass()) return false;
+	@PrePersist
+	public void generateChallengeCode() {
+		challengeCode = RandomStringUtils.random(6, true, true).toUpperCase();
+	}
 
-        Challenge challenge1 = (Challenge) o;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
 
-        return new EqualsBuilder()
-                .append(guildId, challenge1.guildId)
-                .append(challengerUserId, challenge1.challengerUserId)
-                .append(defenderUserId, challenge1.defenderUserId)
-                .append(id, challenge1.id)
-                .append(challenge, challenge1.challenge)
-                .isEquals();
-    }
+		if (o == null || getClass() != o.getClass()) return false;
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(guildId)
-                .append(challengerUserId)
-                .append(defenderUserId)
-                .append(challenge)
-                .toHashCode();
-    }
+		Challenge challenge1 = (Challenge) o;
+
+		return new EqualsBuilder()
+				.append(guildId, challenge1.guildId)
+				.append(challengeCode, challenge1.challengeCode)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37)
+				.append(guildId)
+				.append(challengeCode)
+				.toHashCode();
+	}
 }
