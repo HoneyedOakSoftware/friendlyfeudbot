@@ -1,0 +1,5 @@
+/*C3*/SET SCHEMA PUBLIC
+drop table challenge if exists
+drop sequence hibernate_sequence if exists
+create sequence hibernate_sequence start with 1 increment by 1
+create table challenge (id bigint not null, challenge varchar(255), challenge_code varchar(255) not null, challenger_user_id bigint not null, defender_user_id bigint not null, guild_id bigint not null, referee_user_id bigint, primary key (id))
