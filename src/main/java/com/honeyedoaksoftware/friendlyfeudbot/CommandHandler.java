@@ -1,8 +1,9 @@
 package com.honeyedoaksoftware.friendlyfeudbot;
 
 import com.honeyedoaksoftware.friendlyfeudbot.command.*;
-import com.honeyedoaksoftware.friendlyfeudbot.repository.ChallengeRepository;
 import com.honeyedoaksoftware.friendlyfeudbot.util.BotUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
@@ -12,7 +13,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class CommandHandler {
+
+    private HelpCommand helpCommand;
+    private WinCommand winCommand;
+    private ListCommand listCommand;
+    private ChallengeCommand challengeCommand;
 
     private static final String HELP_COMMAND = "help";
     private static final String WINNER_COMMAND = "winner";
@@ -22,22 +29,21 @@ public class CommandHandler {
     // A map of commands mapping from command string to the functional impl
     private Map<String, Command> commandMap = new HashMap<>();
 
-    private void buildCommandMap() {
-        commandMap.put(HELP_COMMAND, ((event, args) -> new HelpCommand() {
-        }.runCommand(event, args)));
-        commandMap.put(WINNER_COMMAND, ((event, args) -> new WinCommand() {
-        }.runCommand(event, args)));
-        commandMap.put(LIST_COMMAND, ((event, args) -> new ListCommand() {
-        }.runCommand(event, args)));
-        commandMap.put(CHALLENGE_COMMAND, ((event, args) -> new ChallengeCommand(challengeRepository) {
-        }.runCommand(event, args)));
+    @Autowired
+    public CommandHandler(HelpCommand helpCommand, WinCommand winCommand, ListCommand listCommand, ChallengeCommand challengeCommand) {
+        this.helpCommand = helpCommand;
+        this.winCommand = winCommand;
+        this.listCommand = listCommand;
+        this.challengeCommand = challengeCommand;
+
+        buildCommandMap();
     }
 
-    private ChallengeRepository challengeRepository;
-
-    public CommandHandler(ChallengeRepository challengeRepository) {
-        this.challengeRepository = challengeRepository;
-        buildCommandMap();
+    private void buildCommandMap() {
+        commandMap.put(HELP_COMMAND, (helpCommand));
+        commandMap.put(WINNER_COMMAND, (winCommand));
+        commandMap.put(LIST_COMMAND, (listCommand));
+        commandMap.put(CHALLENGE_COMMAND, (challengeCommand));
     }
 
     @EventSubscriber
