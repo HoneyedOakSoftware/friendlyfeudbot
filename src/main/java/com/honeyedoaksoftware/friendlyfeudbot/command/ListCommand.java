@@ -5,7 +5,6 @@ import com.honeyedoaksoftware.friendlyfeudbot.util.BotUtils;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 
@@ -36,10 +35,11 @@ public class ListCommand implements Command {
         commandMap.put(REFEREE_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndRefereeUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
     }
 
-    @Autowired
     private ChallengeRepository challengeRepository;
 
-    public ListCommand() {
+    @Autowired
+    public ListCommand(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
         buildCommandMap();
     }
 

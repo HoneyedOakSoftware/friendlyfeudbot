@@ -5,7 +5,6 @@ import com.honeyedoaksoftware.friendlyfeudbot.util.BotUtils;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 
@@ -15,8 +14,12 @@ import java.util.Arrays;
 @Component
 public class HelpCommand implements Command {
 
-    @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    public HelpCommand(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
+    }
 
     @Override
     public void runCommand(MessageReceivedEvent event, String[] args) {

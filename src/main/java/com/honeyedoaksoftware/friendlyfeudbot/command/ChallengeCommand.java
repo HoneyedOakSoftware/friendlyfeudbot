@@ -7,7 +7,6 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IIDLinkedObject;
@@ -22,8 +21,12 @@ import java.util.stream.Collectors;
 @Component
 public class ChallengeCommand implements Command {
 
-    @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    public ChallengeCommand(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
+    }
 
     @Override
     public void runCommand(MessageReceivedEvent event, String[] args) {
@@ -49,12 +52,12 @@ public class ChallengeCommand implements Command {
         }
 
         if (defenderError) {
-            BotUtils.sendMessage(channel, "<@" + challengerUserId + "> You need to declare a defender @ mention someone else");
+            BotUtils.sendMessage(channel, BotUtils.userLongIdToMention(challengerUserId) + " You need to declare a defender @ mention someone else");
             return;
         }
 
         if (challengerUserId == defenderUserId) {
-            BotUtils.sendMessage(channel, "<@" + challengerUserId + "> Challenging yourself are you? 1v1 someone else!");
+            BotUtils.sendMessage(channel, BotUtils.userLongIdToMention(challengerUserId) + " Challenging yourself are you? 1v1 someone else!");
             return;
         }
 
@@ -64,19 +67,19 @@ public class ChallengeCommand implements Command {
         }
 
         if (Objects.equals(challengerUserId, refereeUserId) || Objects.equals(defenderUserId, refereeUserId)) {
-            BotUtils.sendMessage(channel, "<@" + challengerUserId + "> The referee should be independent, do not pick either party as the referee. (a referee is not mandatory)");
+            BotUtils.sendMessage(channel, BotUtils.userLongIdToMention(challengerUserId) + " The referee should be independent, do not pick either party as the referee. (a referee is not mandatory)");
             return;
         }
 
         List<Long> mentionedBots = event.getMessage().getMentions().stream().filter(IUser::isBot).map(IIDLinkedObject::getLongID).collect(Collectors.toList());
 
         if (mentionedBots.contains(defenderUserId)) {
-            BotUtils.sendMessage(channel, "<@" + challengerUserId + "> Do you honestly expect a bot to accept a challenge? please pick a human adversary!!");
+            BotUtils.sendMessage(channel, BotUtils.userLongIdToMention(challengerUserId) + " Do you honestly expect a bot to accept a challenge? please pick a human adversary!!");
             return;
         }
 
         if (Objects.nonNull(refereeUserId) && mentionedBots.contains(refereeUserId)) {
-            BotUtils.sendMessage(channel, "<@" + challengerUserId + "> How do you expect a bot to referee a challenge? please pick a human witness!!");
+            BotUtils.sendMessage(channel, BotUtils.userLongIdToMention(challengerUserId) + " How do you expect a bot to referee a challenge? please pick a human witness!!");
             return;
         }
 
@@ -95,12 +98,15 @@ public class ChallengeCommand implements Command {
 
         log.trace("challenge saved: " + challenge.toString());
 
-        StringBuilder message = new StringBuilder("Pistols at dawn! A challenge has been posted.").append("<@").append(challengerUserId).append(">")
-                .append(" has Challenged ").append("<@").append(defenderUserId).append(">")
-                .append(" To a duel.\n").append("The duel will consist of \"").append(challengeText).append("\"");
+        StringBuilder message = new StringBuilder("Pistols at dawn! A challenge has been posted. ")
+                .append(BotUtils.userLongIdToMention(challengerUserId))
+                .append(" has Challenged ")
+                .append(BotUtils.userLongIdToMention(defenderUserId))
+                .append(" To a duel.\n")
+                .append("The duel will consist of \"").append(challengeText).append("\"");
 
         if (Objects.nonNull(refereeUserId)) {
-            message.append("\n").append("<@").append(refereeUserId).append("> has been chosen as witness and arbiter");
+            message.append("\n").append(BotUtils.userLongIdToMention(refereeUserId)).append(" has been chosen as witness and arbiter");
         }
 
         BotUtils.sendMessage(channel, message.toString());

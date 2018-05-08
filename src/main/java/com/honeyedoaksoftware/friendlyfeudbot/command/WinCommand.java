@@ -14,8 +14,12 @@ import java.util.Arrays;
 @Component
 public class WinCommand implements Command {
 
-    @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    public WinCommand(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
+    }
 
     @Override
     public void runCommand(MessageReceivedEvent event, String[] args) {

@@ -56,4 +56,8 @@ public class BotUtils {
 
         return id;
     }
+
+    public static String userLongIdToMention(long userLongId) {
+        return "<@".concat(String.valueOf(userLongId)).concat(">");
+    }
 }
