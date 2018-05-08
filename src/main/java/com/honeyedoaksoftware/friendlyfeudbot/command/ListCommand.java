@@ -16,48 +16,50 @@ import java.util.Map;
 @Component
 public class ListCommand implements Command {
 
-    private static final String HELP_COMMAND = "help";
-    private static final String ALL_COMMAND = "all";
-    private static final String MINE_COMMAND = "mine";
-    private static final String CHALLENGER_COMMAND = "challenger";
-    private static final String DEFENDER_COMMAND = "defender";
-    private static final String REFEREE_COMMAND = "referee";
+	public static final String COMMAND_TEXT = "list";
 
-    // A map of commands mapping from command string to the functional impl
-    private Map<String, Command> commandMap = new HashMap<>();
+	private static final String HELP_COMMAND = "help";
+	private static final String ALL_COMMAND = "all";
+	private static final String MINE_COMMAND = "mine";
+	private static final String CHALLENGER_COMMAND = "challenger";
+	private static final String DEFENDER_COMMAND = "defender";
+	private static final String REFEREE_COMMAND = "referee";
 
-    private void buildCommandMap() {
-        commandMap.put(HELP_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), "Help function not yet implemented"));
-        commandMap.put(ALL_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildId(event.getGuild().getLongID()).toString()));
-        commandMap.put(MINE_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findApplicableTo(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
-        commandMap.put(CHALLENGER_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndChallengerUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
-        commandMap.put(DEFENDER_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndDefenderUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
-        commandMap.put(REFEREE_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndRefereeUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
-    }
+	// A map of commands mapping from command string to the functional impl
+	private Map<String, Command> commandMap = new HashMap<>();
 
-    private ChallengeRepository challengeRepository;
+	private void buildCommandMap() {
+		commandMap.put(HELP_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), "Help function not yet implemented"));
+		commandMap.put(ALL_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildId(event.getGuild().getLongID()).toString()));
+		commandMap.put(MINE_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findApplicableTo(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
+		commandMap.put(CHALLENGER_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndChallengerUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
+		commandMap.put(DEFENDER_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndDefenderUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
+		commandMap.put(REFEREE_COMMAND, (event, args) -> BotUtils.sendMessage(event.getChannel(), challengeRepository.findByGuildIdAndRefereeUserId(event.getGuild().getLongID(), event.getAuthor().getLongID()).toString()));
+	}
 
-    @Autowired
-    public ListCommand(ChallengeRepository challengeRepository) {
-        this.challengeRepository = challengeRepository;
-        buildCommandMap();
-    }
+	private ChallengeRepository challengeRepository;
 
-    @Override
-    public void runCommand(MessageReceivedEvent event, String[] args) {
-        IChannel channel = event.getChannel();
-        BotUtils.sendMessage(channel, "Feuds list requested! " + BotUtils.BOT_NAME + " received the following arguments: " + Arrays.toString(args));
+	@Autowired
+	public ListCommand(ChallengeRepository challengeRepository) {
+		this.challengeRepository = challengeRepository;
+		buildCommandMap();
+	}
 
-        if (args.length == 0) {
-            commandMap.get(HELP_COMMAND).runCommand(event, args);
-        } else {
-            String command = args[0].toLowerCase();
+	@Override
+	public void runCommand(MessageReceivedEvent event, String[] args) {
+		IChannel channel = event.getChannel();
+		log.debug("Feuds list requested! " + BotUtils.BOT_NAME + " received the following arguments: " + Arrays.toString(args));
 
-            if (commandMap.containsKey(command)) {
-                commandMap.get(command).runCommand(event, args);
-            } else {
-                commandMap.get(HELP_COMMAND).runCommand(event, args);
-            }
-        }
-    }
+		if (args.length == 0) {
+			commandMap.get(HELP_COMMAND).runCommand(event, args);
+		} else {
+			String command = args[0].toLowerCase();
+
+			if (commandMap.containsKey(command)) {
+				commandMap.get(command).runCommand(event, args);
+			} else {
+				commandMap.get(HELP_COMMAND).runCommand(event, args);
+			}
+		}
+	}
 }

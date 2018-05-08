@@ -11,72 +11,80 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"guildId", "challengeCode"})
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class Challenge implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    @Column(nullable = false)
-    private long guildId;
+	@Column(nullable = false, updatable = false)
+	private long guildId;
 
-    @Column(nullable = false)
-    private long challengerUserId;
+	@Column(nullable = false, updatable = false)
+	private long challengerUserId;
 
-    @Column(nullable = false)
-    private long defenderUserId;
+	@Column(nullable = false, updatable = false)
+	private long defenderUserId;
 
-    private Long refereeUserId;
+	private Long refereeUserId;
 
-    private String challenge;
+	private String challenge;
 
-    @Column(nullable = false)
-    @Setter(AccessLevel.NONE)
-    private String challengeCode;
+	@Column(nullable = false, length = 12, updatable = false)
+	@Setter(AccessLevel.NONE)
+	private String challengeCode;
 
-    @PrePersist
-    public void generateChallengeCode() {
-        challengeCode = RandomStringUtils.random(6, true, true).toUpperCase();
-    }
+	@Column(updatable = false)
+	private Long winnerUserId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+	@PrePersist
+	public void generateChallengeCode() {
+		if (Objects.isNull(challengeCode)) {
+			challengeCode = RandomStringUtils.random(6, true, true).toUpperCase();
+		}
+	}
 
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
 
-        Challenge challenge1 = (Challenge) o;
+		if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder()
-                .append(guildId, challenge1.guildId)
-                .append(challengeCode, challenge1.challengeCode)
-                .isEquals();
-    }
+		Challenge challenge1 = (Challenge) o;
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(guildId)
-                .append(challengeCode)
-                .toHashCode();
-    }
+		return new EqualsBuilder()
+				.append(guildId, challenge1.guildId)
+				.append(challengeCode, challenge1.challengeCode)
+				.isEquals();
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder challengeStringBuilder = new StringBuilder("Challenge[").append(challengeCode).append("]").append("\n")
-                .append(BotUtils.userLongIdToMention(challengerUserId))
-                .append(" Challenged ")
-                .append(BotUtils.userLongIdToMention(defenderUserId))
-                .append(" To a duel of \"").append(challenge).append("\".");
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37)
+				.append(guildId)
+				.append(challengeCode)
+				.toHashCode();
+	}
 
-        if (Objects.nonNull(refereeUserId)) {
-            challengeStringBuilder.append(BotUtils.userLongIdToMention(refereeUserId)).append(" has been chosen as witness and arbiter");
-        }
+	@Override
+	public String toString() {
+		StringBuilder challengeStringBuilder = new StringBuilder("Challenge[").append(challengeCode).append("]").append("\n")
+				.append(BotUtils.userLongIdToMention(challengerUserId))
+				.append(" Challenged ")
+				.append(BotUtils.userLongIdToMention(defenderUserId))
+				.append(" To a duel of \"").append(challenge).append("\".");
 
-        return challengeStringBuilder.toString();
-    }
+		if (Objects.nonNull(refereeUserId)) {
+			challengeStringBuilder.append(BotUtils.userLongIdToMention(refereeUserId)).append(" has been chosen as witness and arbiter");
+		}
+
+		return challengeStringBuilder.toString();
+	}
 }
