@@ -1,8 +1,0 @@
-/*C12*/SET SCHEMA PUBLIC
-drop table challenge if exists
-drop sequence hibernate_sequence if exists
-create sequence hibernate_sequence start with 1 increment by 1
-create table challenge (id bigint not null, challenge varchar(255), challenge_code varchar(255) not null, challenger_user_id bigint not null, defender_user_id bigint not null, guild_id bigint not null, referee_user_id bigint, primary key (id))
-INSERT INTO CHALLENGE VALUES(1,' test die list finctie','ZFLZ3P',240176271538126849,240175519721586691,441309574364921856,NULL)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 2
-COMMIT

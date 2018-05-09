@@ -8,25 +8,25 @@ import java.util.Optional;
 
 public interface ChallengeRepository extends CrudRepository<Challenge, Long> {
 
-	List<Challenge> findByGuildIdAndChallengerUserId(long guildId, long challengerUserId);
+    List<Challenge> findByGuildIdAndChallengerUserId(long guildId, long challengerUserId);
 
-	List<Challenge> findByGuildIdAndDefenderUserId(long guildId, long defenderUserId);
+    List<Challenge> findByGuildIdAndDefenderUserId(long guildId, long defenderUserId);
 
-	List<Challenge> findByGuildIdAndChallengerUserIdAndDefenderUserId(long guildId, long challengerUserId, long defenderUserId);
+    List<Challenge> findByGuildIdAndChallengerUserIdAndDefenderUserId(long guildId, long challengerUserId, long defenderUserId);
 
-	Optional<Challenge> findByGuildIdAndChallengeCode(long guildId, String challengeCode);
+    Optional<Challenge> findByGuildIdAndChallengeCode(long guildId, String challengeCode);
 
-	List<Challenge> findByGuildIdAndRefereeUserId(long guildId, long refereeUserId);
+    List<Challenge> findByGuildIdAndRefereeUserId(long guildId, long refereeUserId);
 
-	List<Challenge> findByGuildId(long guildId);
+    List<Challenge> findByGuildId(long guildId);
 
-	default List<Challenge> findApplicableTo(long guildId, long userId) {
-		List<Challenge> result = findByGuildIdAndChallengerUserId(guildId, userId);
-		result.addAll(findByGuildIdAndDefenderUserId(guildId, userId));
-		result.addAll(findByGuildIdAndRefereeUserId(guildId, userId));
+    default List<Challenge> findApplicableTo(long guildId, long userId) {
+        List<Challenge> result = findByGuildIdAndChallengerUserId(guildId, userId);
+        result.addAll(findByGuildIdAndDefenderUserId(guildId, userId));
+        result.addAll(findByGuildIdAndRefereeUserId(guildId, userId));
 
-		return result;
-	}
+        return result;
+    }
 
-	int countByGuildIdAndChallengeCode(long guildId, String challengeCode);
+    int countByGuildIdAndChallengeCode(long guildId, String challengeCode);
 }

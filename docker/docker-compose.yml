@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+    FriendlyFeudHSQLDB:
+      image: blacklabelops/hsqldb
+      hostname: friendlyfeud.hsqldb
+      environment:
+        - HSQLDB_USER=friendlyfeud
+        - HSQLDB_PASSWORD=Rdw9ZpuCYIdkLY4s
+        - HSQLDB_DATABASE_NAME=friendlyfeud
+        - HSQLDB_DATABASE_ALIAS=friendlyfeud
+        - HSQLDB_TRACE=false
+        - HSQLDB_REMOTE=true
+      networks:
+        databasenetwork:
+          aliases:
+            - friendlyfeud.hsqldb
+      ports:
+        - "9001:9001"
+      restart: unless-stopped
+
+networks:
+    databasenetwork:
+
+volumes:
+  database:
